@@ -1,43 +1,41 @@
- Laravel 12 – Run Artisan Command from Controller  
- 
-![Laravel](https://img.shields.io/badge/Laravel-12-orange)
-![PHP](https://img.shields.io/badge/PHP-8.2-blue)
-![Artisan](https://img.shields.io/badge/Artisan-Commands-green)
+# PHP_Laravel12_Execute_Artisan_Command_From_Controller
 
-This guide explains how to execute **Artisan commands directly from a controller** in Laravel 12, using a simple example of running database migrations.
-
-(Content source: your uploaded DOCX file)
+This guide explains how to run an Artisan command directly from a controller in Laravel 12.  
+The example uses the **migrate** command, but you can run any Artisan command.
 
 ---
 
- Overview  
-With this method, you can run **any Artisan command** (migration, storage link, cache clear, custom commands, etc.) using controller actions.
+## Step 1: Install Laravel 12
 
-Common use cases include:  
-- Running migrations  
-- Clearing cache  
-- Creating storage link  
-- Running queue workers  
-- Triggering custom Artisan commands  
+Create a fresh Laravel 12 project using the terminal:
 
----
-
- Step 1 — Install Laravel 12  
 ```
 composer create-project laravel/laravel your-folder-name
 ```
 
+This will generate a new Laravel 12 application with all default configurations.
+
 ---
 
- Step 2 — Create Controller  
-Create a controller named **ItemController**:
+## Step 2: Add Controller
+
+Create a new controller named **ItemController**:
 
 ```
 php artisan make:controller ItemController
 ```
 
- Example Code  
+After running this command, open the file:
+
+```
+app/Http/Controllers/ItemController.php
+```
+
+And paste the following code:
+
 ```php
+<?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Artisan;
@@ -64,10 +62,20 @@ class ItemController extends Controller
 }
 ```
 
+## Explanation  
+- `Artisan::call('migrate')` runs Laravel migration command from inside the controller.  
+- You can replace `"migrate"` with any artisan command like:  
+  - `cache:clear`  
+  - `config:cache`  
+  - `route:list`  
+  - custom commands  
+- `Artisan::output()` returns the terminal output in JSON response.
+
 ---
 
- Step 3 — Add Route to Execute Artisan Command  
-Add this route in **routes/web.php**:
+## Step 3: Add Route
+
+Add the route inside `routes/web.php`:
 
 ```php
 use App\Http\Controllers\ItemController;
@@ -75,22 +83,24 @@ use App\Http\Controllers\ItemController;
 Route::get('/run-migrate', [ItemController::class, 'index']);
 ```
 
-This will run the **`php artisan migrate`** command when the route is visited.
+This route will trigger the Artisan command when accessed through the browser.
 
 ---
 
- Step 4 — Run the Application  
-Start the Laravel server:
+## Step 4: Run Laravel Application
+
+Start the development server:
 
 ```
 php artisan serve
 ```
 
-Now open the URL to trigger the command:
+Now open the URL in your browser:
 
 ```
 http://localhost:8000/run-migrate
 ```
+
 
 You will receive a JSON response containing:
 
