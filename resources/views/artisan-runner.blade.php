@@ -477,12 +477,28 @@ function renderArtisanOutput(string $output, string $command, string $params): s
         </aside>
 
         <main class="main">
-            <div class="header">
-                <div>
-                    <h1>Command Execution</h1>
-                    <p class="breadcrumb">Artisan Runner / <span>{{ $commands[$selectedCommand] ?? ucfirst($selectedCommand) }}</span></p>
-                </div>
-            </div>
+<div class="header">
+    <div>
+        <h1>Command Execution</h1>
+
+        <p class="breadcrumb">
+            Artisan Runner /
+            <span>
+                {{ $commands[$selectedCommand] ?? ucfirst($selectedCommand) }}
+            </span>
+        </p>
+    </div>
+
+    <div>
+        <a
+            href="{{ route('command.history') }}"
+            class="btn"
+            style="text-decoration:none;"
+        >
+            📋 Command History
+        </a>
+    </div>
+</div>
 
             @if (session('error'))
                 <div class="alert alert-error">
