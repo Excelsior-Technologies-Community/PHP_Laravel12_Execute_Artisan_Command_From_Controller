@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -40,6 +41,32 @@ Route::delete(
     '/command-history',
     [ItemController::class, 'clearHistory']
 )->name('command.history.clear');
+
+/*
+|--------------------------------------------------------------------------
+| Product Management
+|--------------------------------------------------------------------------
+*/
+
+Route::get(
+    '/products',
+    [ProductController::class, 'index']
+)->name('products.index');
+
+Route::get(
+    '/products/export-csv',
+    [ProductController::class, 'exportCsv']
+)->name('products.export.csv');
+
+Route::post(
+    '/products/bulk-action',
+    [ProductController::class, 'bulkAction']
+)->name('products.bulk-action');
+
+Route::delete(
+    '/products/{product}',
+    [ProductController::class, 'destroy']
+)->name('products.destroy');
 
 /*
 |--------------------------------------------------------------------------

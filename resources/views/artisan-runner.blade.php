@@ -1,42 +1,70 @@
 @php
 function renderArtisanOutput(string $output, string $command, string $params): string
 {
-    $lines = explode("\n", $output);
-    $html = '<span class="t-line"><span class="t-prompt">$</span><span class="t-cmd">php artisan ' . e($command) . '</span> ' . e($params) . "</span>\n";
-    $html .= '<span class="t-line">------------------------------</span>';
+$lines = explode("\n", $output);
 
-    foreach ($lines as $line) {
-        $escaped = e($line);
-        $class = 't-line';
+$html = '<span class="t-line"><span class="t-prompt">$</span><span class="t-cmd">php artisan ' .
+        e($command) .
+        '</span> ' .
+    e($params) .
+    "</span>\n";
 
-        if (preg_match('/error|exception|failed|could not|cannot/i', $line)) {
-            $class = 't-line t-error';
-        } elseif (preg_match('/warning|warn/i', $line)) {
-            $class = 't-line t-warn';
-        } elseif (preg_match('/success|done|info|migrated|installed|generated|cleared|set successfully|Application cache cleared|Configuration cached/i', $line)) {
-            $class = 't-line t-success';
-        } elseif (preg_match('/^\s*\d+\s+\-\s+/', $line) || preg_match('/migration|Migration/i', $line)) {
-            $class = 't-line t-success';
-        } elseif (trim($line) === '') {
-            $class = 't-line';
-        } else {
-            $class = 't-line t-info';
-        }
+$html .= '<span class="t-line">------------------------------</span>';
 
-        $html .= '<span class="' . $class . '">' . $escaped . "</span>\n";
-    }
+foreach ($lines as $line) {
+$escaped = e($line);
+$class = 't-line';
 
-    return $html;
+if (preg_match('/error|exception|failed|could not|cannot/i', $line)) {
+$class = 't-line t-error';
+} elseif (preg_match('/warning|warn/i', $line)) {
+$class = 't-line t-warn';
+} elseif (
+preg_match(
+'/success|done|info|migrated|installed|generated|cleared|set successfully|Application cache cleared|Configuration cached/i',
+$line
+)
+) {
+$class = 't-line t-success';
+} elseif (
+preg_match('/^\s*\d+\s+\-\s+/', $line) ||
+preg_match('/migration|Migration/i', $line)
+) {
+$class = 't-line t-success';
+} elseif (trim($line) === '') {
+$class = 't-line';
+} else {
+$class = 't-line t-info';
+}
+
+$html .= '<span class="' . $class . '">' . $escaped . "</span>\n";
+}
+
+return $html;
 }
 @endphp
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1">
+
     <title>Artisan Runner | Laravel Command Manager</title>
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet" />
+
+    <link
+        rel="preconnect"
+        href="https://fonts.bunny.net">
+
+    <link
+        href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap"
+        rel="stylesheet">
+
     <style>
         :root {
             --bg: #f1f5f9;
@@ -53,7 +81,11 @@ function renderArtisanOutput(string $output, string $command, string $params): s
             --terminal-text: #e2e8f0;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -108,7 +140,9 @@ function renderArtisanOutput(string $output, string $command, string $params): s
             border-bottom: 1px solid var(--border);
         }
 
-        .category { margin-bottom: 1.5rem; }
+        .category {
+            margin-bottom: 1.5rem;
+        }
 
         .category-title {
             font-size: 0.7rem;
@@ -119,9 +153,13 @@ function renderArtisanOutput(string $output, string $command, string $params): s
             margin-bottom: 0.75rem;
         }
 
-        .command-list { list-style: none; }
+        .command-list {
+            list-style: none;
+        }
 
-        .command-item { margin-bottom: 0.25rem; }
+        .command-item {
+            margin-bottom: 0.25rem;
+        }
 
         .command-link {
             display: flex;
@@ -140,7 +178,9 @@ function renderArtisanOutput(string $output, string $command, string $params): s
             text-align: left;
         }
 
-        .command-link:hover { background: #f1f5f9; }
+        .command-link:hover {
+            background: #f1f5f9;
+        }
 
         .command-link.active {
             background: #dbeafe;
@@ -172,6 +212,7 @@ function renderArtisanOutput(string $output, string $command, string $params): s
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 2rem;
+            gap: 1rem;
         }
 
         .header h1 {
@@ -188,6 +229,12 @@ function renderArtisanOutput(string $output, string $command, string $params): s
         .breadcrumb span {
             color: var(--primary);
             font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
         }
 
         .card {
@@ -263,10 +310,30 @@ function renderArtisanOutput(string $output, string $command, string $params): s
             transition: background 0.15s;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 0.5rem;
+            text-decoration: none;
         }
 
-        .btn:hover { background: var(--primary-hover); }
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-products {
+            background: #059669;
+        }
+
+        .btn-products:hover {
+            background: #047857;
+        }
+
+        .btn-history {
+            background: #2563eb;
+        }
+
+        .btn-history:hover {
+            background: #1d4ed8;
+        }
 
         .terminal {
             background: var(--terminal-bg);
@@ -284,10 +351,23 @@ function renderArtisanOutput(string $output, string $command, string $params): s
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .terminal-dot { width: 12px; height: 12px; border-radius: 50%; }
-        .terminal-dot.red { background: #ef4444; }
-        .terminal-dot.yellow { background: #f59e0b; }
-        .terminal-dot.green { background: #10b981; }
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red {
+            background: #ef4444;
+        }
+
+        .terminal-dot.yellow {
+            background: #f59e0b;
+        }
+
+        .terminal-dot.green {
+            background: #10b981;
+        }
 
         .terminal-title {
             margin-left: 0.5rem;
@@ -305,18 +385,53 @@ function renderArtisanOutput(string $output, string $command, string $params): s
             overflow-y: auto;
         }
 
-        .terminal-body::-webkit-scrollbar { width: 8px; }
-        .terminal-body::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 4px; }
-        .terminal-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
-        .terminal-body::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+        .terminal-body::-webkit-scrollbar {
+            width: 8px;
+        }
 
-        .t-line { display: block; white-space: pre-wrap; word-break: break-word; }
-        .t-prompt { color: #10b981; }
-        .t-cmd { color: #60a5fa; }
-        .t-info { color: #94a3b8; }
-        .t-warn { color: #fbbf24; }
-        .t-error { color: #f87171; }
-        .t-success { color: #34d399; }
+        .terminal-body::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+
+        .terminal-body::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+
+        .terminal-body::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .t-line {
+            display: block;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .t-prompt {
+            color: #10b981;
+        }
+
+        .t-cmd {
+            color: #60a5fa;
+        }
+
+        .t-info {
+            color: #94a3b8;
+        }
+
+        .t-warn {
+            color: #fbbf24;
+        }
+
+        .t-error {
+            color: #f87171;
+        }
+
+        .t-success {
+            color: #34d399;
+        }
 
         .empty {
             color: #475569;
@@ -347,7 +462,11 @@ function renderArtisanOutput(string $output, string $command, string $params): s
             border: 1px solid #fecaca;
         }
 
-        .alert-icon { font-size: 1.25rem; line-height: 1; flex-shrink: 0; }
+        .alert-icon {
+            font-size: 1.25rem;
+            line-height: 1;
+            flex-shrink: 0;
+        }
 
         .footer {
             margin-top: 1.5rem;
@@ -381,229 +500,602 @@ function renderArtisanOutput(string $output, string $command, string $params): s
             font-size: 0.75rem;
         }
 
-        .status-chip.success { background: #dcfce7; color: #166534; }
-        .status-chip.error { background: #fee2e2; color: #991b1b; }
+        .status-chip.success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-chip.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
 
         @media (max-width: 768px) {
-            .app { grid-template-columns: 1fr; }
-            .sidebar { display: none; }
-            .form-row { grid-template-columns: 1fr; }
+
+            .app {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+            }
+
+            .header-actions {
+                width: 100%;
+            }
+
+            .header-actions .btn {
+                flex: 1;
+            }
         }
     </style>
+
 </head>
+
 <body>
+
     <div class="app">
+
+        {{-- SIDEBAR --}}
         <aside class="sidebar">
+
             <div class="brand">
                 <div class="brand-icon">A</div>
                 Artisan Runner
             </div>
-            <p class="subtitle">Laravel Command Manager</p>
 
+            <p class="subtitle">
+                Laravel Command Manager
+            </p>
+
+            {{-- DATABASE --}}
             <div class="category">
-                <div class="category-title">Database</div>
+
+                <div class="category-title">
+                    Database
+                </div>
+
                 <ul class="command-list">
+
                     <li class="command-item">
-                        <a href="{{ route('command.form', ['command' => 'migrate:status']) }}" class="command-link {{ ($selectedCommand ?? '') === 'migrate:status' ? 'active' : '' }}"><span>Migration Status</span><span class="command-dot"></span></a>
+                        <a
+                            href="{{ route('command.form', ['command' => 'migrate:status']) }}"
+                            class="command-link {{ ($selectedCommand ?? '') === 'migrate:status' ? 'active' : '' }}">
+                            <span>Migration Status</span>
+                            <span class="command-dot"></span>
+                        </a>
                     </li>
+
                     <li class="command-item">
-                        <a href="{{ route('command.form', ['command' => 'migrate']) }}" class="command-link {{ ($selectedCommand ?? '') === 'migrate' ? 'active' : '' }}"><span>Run Migrations</span><span class="command-dot"></span></a>
+                        <a
+                            href="{{ route('command.form', ['command' => 'migrate']) }}"
+                            class="command-link {{ ($selectedCommand ?? '') === 'migrate' ? 'active' : '' }}">
+                            <span>Run Migrations</span>
+                            <span class="command-dot"></span>
+                        </a>
                     </li>
+
                     <li class="command-item">
-                        <a href="{{ route('command.form', ['command' => 'db:seed']) }}" class="command-link {{ ($selectedCommand ?? '') === 'db:seed' ? 'active' : '' }}"><span>Seed Database</span><span class="command-dot"></span></a>
+                        <a
+                            href="{{ route('command.form', ['command' => 'db:seed']) }}"
+                            class="command-link {{ ($selectedCommand ?? '') === 'db:seed' ? 'active' : '' }}">
+                            <span>Seed Database</span>
+                            <span class="command-dot"></span>
+                        </a>
                     </li>
+
                     <li class="command-item">
-                        <a href="{{ route('command.form', ['command' => 'migrate:rollback']) }}" class="command-link {{ ($selectedCommand ?? '') === 'migrate:rollback' ? 'active' : '' }}"><span>Rollback</span><span class="command-dot"></span></a>
+                        <a
+                            href="{{ route('command.form', ['command' => 'migrate:rollback']) }}"
+                            class="command-link {{ ($selectedCommand ?? '') === 'migrate:rollback' ? 'active' : '' }}">
+                            <span>Rollback</span>
+                            <span class="command-dot"></span>
+                        </a>
                     </li>
+
                     <li class="command-item">
-                        <a href="{{ route('command.form', ['command' => 'migrate:fresh']) }}" class="command-link {{ ($selectedCommand ?? '') === 'migrate:fresh' ? 'active' : '' }}"><span>Fresh Migrate</span><span class="command-dot"></span></a>
+                        <a
+                            href="{{ route('command.form', ['command' => 'migrate:fresh']) }}"
+                            class="command-link {{ ($selectedCommand ?? '') === 'migrate:fresh' ? 'active' : '' }}">
+                            <span>Fresh Migrate</span>
+                            <span class="command-dot"></span>
+                        </a>
                     </li>
+
                     <li class="command-item">
-                        <a href="{{ route('command.form', ['command' => 'migrate:reset']) }}" class="command-link {{ ($selectedCommand ?? '') === 'migrate:reset' ? 'active' : '' }}"><span>Reset Migrations</span><span class="command-dot"></span></a>
+                        <a
+                            href="{{ route('command.form', ['command' => 'migrate:reset']) }}"
+                            class="command-link {{ ($selectedCommand ?? '') === 'migrate:reset' ? 'active' : '' }}">
+                            <span>Reset Migrations</span>
+                            <span class="command-dot"></span>
+                        </a>
                     </li>
+
                     <li class="command-item">
-                        <a href="{{ route('command.form', ['command' => 'db:wipe']) }}" class="command-link {{ ($selectedCommand ?? '') === 'db:wipe' ? 'active' : '' }}"><span>Wipe Database</span><span class="command-dot"></span></a>
+                        <a
+                            href="{{ route('command.form', ['command' => 'db:wipe']) }}"
+                            class="command-link {{ ($selectedCommand ?? '') === 'db:wipe' ? 'active' : '' }}">
+                            <span>Wipe Database</span>
+                            <span class="command-dot"></span>
+                        </a>
                     </li>
+
                 </ul>
+
             </div>
 
+            {{-- CACHE --}}
             <div class="category">
-                <div class="category-title">Cache</div>
+
+                <div class="category-title">
+                    Cache
+                </div>
+
                 <ul class="command-list">
+
                     <li class="command-item">
-                        <a href="{{ route('command.form', ['command' => 'cache:clear']) }}" class="command-link {{ ($selectedCommand ?? '') === 'cache:clear' ? 'active' : '' }}"><span>Clear Cache</span><span class="command-dot"></span></a>
+                        <a
+                            href="{{ route('command.form', ['command' => 'cache:clear']) }}"
+                            class="command-link {{ ($selectedCommand ?? '') === 'cache:clear' ? 'active' : '' }}">
+                            <span>Clear Cache</span>
+                            <span class="command-dot"></span>
+                        </a>
                     </li>
+
                     <li class="command-item">
-                        <a href="{{ route('command.form', ['command' => 'cache:forget']) }}" class="command-link {{ ($selectedCommand ?? '') === 'cache:forget' ? 'active' : '' }}"><span>Cache Forget</span><span class="command-dot"></span></a>
+                        <a
+                            href="{{ route('command.form', ['command' => 'cache:forget']) }}"
+                            class="command-link {{ ($selectedCommand ?? '') === 'cache:forget' ? 'active' : '' }}">
+                            <span>Cache Forget</span>
+                            <span class="command-dot"></span>
+                        </a>
                     </li>
+
                     <li class="command-item">
-                        <a href="{{ route('command.form', ['command' => 'config:cache']) }}" class="command-link {{ ($selectedCommand ?? '') === 'config:cache' ? 'active' : '' }}"><span>Cache Config</span><span class="command-dot"></span></a>
+                        <a
+                            href="{{ route('command.form', ['command' => 'config:cache']) }}"
+                            class="command-link {{ ($selectedCommand ?? '') === 'config:cache' ? 'active' : '' }}">
+                            <span>Cache Config</span>
+                            <span class="command-dot"></span>
+                        </a>
                     </li>
+
                     <li class="command-item">
-                        <a href="{{ route('command.form', ['command' => 'config:clear']) }}" class="command-link {{ ($selectedCommand ?? '') === 'config:clear' ? 'active' : '' }}"><span>Clear Config</span><span class="command-dot"></span></a>
+                        <a
+                            href="{{ route('command.form', ['command' => 'config:clear']) }}"
+                            class="command-link {{ ($selectedCommand ?? '') === 'config:clear' ? 'active' : '' }}">
+                            <span>Clear Config</span>
+                            <span class="command-dot"></span>
+                        </a>
                     </li>
+
                     <li class="command-item">
-                        <a href="{{ route('command.form', ['command' => 'route:cache']) }}" class="command-link {{ ($selectedCommand ?? '') === 'route:cache' ? 'active' : '' }}"><span>Cache Routes</span><span class="command-dot"></span></a>
+                        <a
+                            href="{{ route('command.form', ['command' => 'route:cache']) }}"
+                            class="command-link {{ ($selectedCommand ?? '') === 'route:cache' ? 'active' : '' }}">
+                            <span>Cache Routes</span>
+                            <span class="command-dot"></span>
+                        </a>
                     </li>
+
                     <li class="command-item">
-                        <a href="{{ route('command.form', ['command' => 'route:clear']) }}" class="command-link {{ ($selectedCommand ?? '') === 'route:clear' ? 'active' : '' }}"><span>Clear Route Cache</span><span class="command-dot"></span></a>
+                        <a
+                            href="{{ route('command.form', ['command' => 'route:clear']) }}"
+                            class="command-link {{ ($selectedCommand ?? '') === 'route:clear' ? 'active' : '' }}">
+                            <span>Clear Route Cache</span>
+                            <span class="command-dot"></span>
+                        </a>
                     </li>
+
                     <li class="command-item">
-                        <a href="{{ route('command.form', ['command' => 'view:clear']) }}" class="command-link {{ ($selectedCommand ?? '') === 'view:clear' ? 'active' : '' }}"><span>Clear View Cache</span><span class="command-dot"></span></a>
+                        <a
+                            href="{{ route('command.form', ['command' => 'view:clear']) }}"
+                            class="command-link {{ ($selectedCommand ?? '') === 'view:clear' ? 'active' : '' }}">
+                            <span>Clear View Cache</span>
+                            <span class="command-dot"></span>
+                        </a>
                     </li>
+
                     <li class="command-item">
-                        <a href="{{ route('command.form', ['command' => 'view:cache']) }}" class="command-link {{ ($selectedCommand ?? '') === 'view:cache' ? 'active' : '' }}"><span>Cache Views</span><span class="command-dot"></span></a>
+                        <a
+                            href="{{ route('command.form', ['command' => 'view:cache']) }}"
+                            class="command-link {{ ($selectedCommand ?? '') === 'view:cache' ? 'active' : '' }}">
+                            <span>Cache Views</span>
+                            <span class="command-dot"></span>
+                        </a>
                     </li>
+
                     <li class="command-item">
-                        <a href="{{ route('command.form', ['command' => 'optimize:clear']) }}" class="command-link {{ ($selectedCommand ?? '') === 'optimize:clear' ? 'active' : '' }}"><span>Clear All Cache</span><span class="command-dot"></span></a>
+                        <a
+                            href="{{ route('command.form', ['command' => 'optimize:clear']) }}"
+                            class="command-link {{ ($selectedCommand ?? '') === 'optimize:clear' ? 'active' : '' }}">
+                            <span>Clear All Cache</span>
+                            <span class="command-dot"></span>
+                        </a>
                     </li>
+
                     <li class="command-item">
-                        <a href="{{ route('command.form', ['command' => 'optimize']) }}" class="command-link {{ ($selectedCommand ?? '') === 'optimize' ? 'active' : '' }}"><span>Optimize App</span><span class="command-dot"></span></a>
+                        <a
+                            href="{{ route('command.form', ['command' => 'optimize']) }}"
+                            class="command-link {{ ($selectedCommand ?? '') === 'optimize' ? 'active' : '' }}">
+                            <span>Optimize App</span>
+                            <span class="command-dot"></span>
+                        </a>
                     </li>
+
                 </ul>
+
             </div>
 
+            {{-- UTILITIES --}}
             <div class="category">
-                <div class="category-title">Utilities</div>
+
+                <div class="category-title">
+                    Utilities
+                </div>
+
                 <ul class="command-list">
+
                     <li class="command-item">
-                        <a href="{{ route('command.form', ['command' => 'storage:link']) }}" class="command-link {{ ($selectedCommand ?? '') === 'storage:link' ? 'active' : '' }}"><span>Storage Link</span><span class="command-dot"></span></a>
+                        <a
+                            href="{{ route('command.form', ['command' => 'storage:link']) }}"
+                            class="command-link {{ ($selectedCommand ?? '') === 'storage:link' ? 'active' : '' }}">
+                            <span>Storage Link</span>
+                            <span class="command-dot"></span>
+                        </a>
                     </li>
+
                     <li class="command-item">
-                        <a href="{{ route('command.form', ['command' => 'key:generate']) }}" class="command-link {{ ($selectedCommand ?? '') === 'key:generate' ? 'active' : '' }}"><span>Key Generate</span><span class="command-dot"></span></a>
+                        <a
+                            href="{{ route('command.form', ['command' => 'key:generate']) }}"
+                            class="command-link {{ ($selectedCommand ?? '') === 'key:generate' ? 'active' : '' }}">
+                            <span>Key Generate</span>
+                            <span class="command-dot"></span>
+                        </a>
                     </li>
+
                 </ul>
+
             </div>
+
         </aside>
 
+
+        {{-- MAIN --}}
         <main class="main">
-<div class="header">
-    <div>
-        <h1>Command Execution</h1>
 
-        <p class="breadcrumb">
-            Artisan Runner /
-            <span>
-                {{ $commands[$selectedCommand] ?? ucfirst($selectedCommand) }}
-            </span>
-        </p>
-    </div>
+            {{-- HEADER --}}
+            <div class="header">
 
-    <div>
-        <a
-            href="{{ route('command.history') }}"
-            class="btn"
-            style="text-decoration:none;"
-        >
-            📋 Command History
-        </a>
-    </div>
-</div>
+                <div>
 
-            @if (session('error'))
-                <div class="alert alert-error">
-                    <span class="alert-icon">&#x274C;</span>
-                    <span>{{ session('error') }}</span>
+                    <h1>
+                        Command Execution
+                    </h1>
+
+                    <p class="breadcrumb">
+
+                        Artisan Runner /
+
+                        <span>
+                            {{ $commands[$selectedCommand] ?? ucfirst($selectedCommand) }}
+                        </span>
+
+                    </p>
+
                 </div>
+
+
+                {{-- HEADER BUTTONS --}}
+                <div class="header-actions">
+
+                    {{-- PRODUCTS BUTTON --}}
+                    <a
+                        href="{{ route('products.index') }}"
+                        class="btn btn-products">
+
+                        📦 Products
+
+                    </a>
+
+
+                    {{-- COMMAND HISTORY BUTTON --}}
+                    <a
+                        href="{{ route('command.history') }}"
+                        class="btn btn-history">
+
+                        📋 Command History
+
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            {{-- ERROR --}}
+            @if (session('error'))
+
+            <div class="alert alert-error">
+
+                <span class="alert-icon">
+                    &#x274C;
+                </span>
+
+                <span>
+                    {{ session('error') }}
+                </span>
+
+            </div>
+
             @endif
 
+
+            {{-- MESSAGE --}}
             @isset($message)
-                <div class="alert alert-{{ $status ?? 'success' }}">
-                    <span class="alert-icon">{{ ($status ?? 'success') === 'success' ? '&#x2705;' : '&#x274C;' }}</span>
-                    <span>{{ $message }}</span>
-                </div>
+
+            <div class="alert alert-{{ $status ?? 'success' }}">
+
+                <span class="alert-icon">
+
+                    {{ ($status ?? 'success') === 'success'
+                        ? '&#x2705;'
+                        : '&#x274C;' }}
+
+                </span>
+
+                <span>
+                    {{ $message }}
+                </span>
+
+            </div>
+
             @endisset
 
+
+            {{-- COMMAND CONFIGURATION --}}
             <div class="card">
-                <div class="card-title">Command Configuration</div>
-                <form action="{{ route('command.run') }}" method="POST">
+
+                <div class="card-title">
+                    Command Configuration
+                </div>
+
+                <form
+                    action="{{ route('command.run') }}"
+                    method="POST">
+
                     @csrf
+
                     <div class="form-row">
+
                         <div class="form-group">
-                            <label for="command">Command</label>
-                            <select name="command" id="command" required onchange="updateHelpText()">
+
+                            <label for="command">
+                                Command
+                            </label>
+
+                            <select
+                                name="command"
+                                id="command"
+                                required
+                                onchange="updateHelpText()">
+
                                 @foreach ($commands as $cmd => $label)
-                                    <option value="{{ $cmd }}" {{ (old('command', $selectedCommand ?? 'migrate')) === $cmd ? 'selected' : '' }}>
-                                        {{ $label }}
-                                    </option>
+
+                                <option
+                                    value="{{ $cmd }}"
+                                    {{ (old('command', $selectedCommand ?? 'migrate')) === $cmd ? 'selected' : '' }}>
+
+                                    {{ $label }}
+
+                                </option>
+
                                 @endforeach
+
                             </select>
+
                         </div>
+
+
                         <div class="form-group">
-                            <label for="params">Parameters</label>
-                            <input type="text" name="params" id="params" value="{{ old('params', $params ?? '') }}" placeholder="e.g., --force, --path=database/migrations, --step=3">
+
+                            <label for="params">
+                                Parameters
+                            </label>
+
+                            <input
+                                type="text"
+                                name="params"
+                                id="params"
+                                value="{{ old('params', $params ?? '') }}"
+                                placeholder="e.g., --force, --path=database/migrations, --step=3">
+
                             @if (!empty($help))
-                                <div class="help-text">{{ $help }}</div>
+
+                            <div class="help-text">
+                                {{ $help }}
+                            </div>
+
                             @endif
+
                         </div>
+
                     </div>
-                    <button type="submit" class="btn">
-                        <span>&#9654;</span>
+
+
+                    <button
+                        type="submit"
+                        class="btn">
+
+                        <span>
+                            &#9654;
+                        </span>
+
                         Execute Command
+
                     </button>
+
                 </form>
+
             </div>
 
+
+            {{-- TERMINAL OUTPUT --}}
             @if (isset($output) && $output !== null)
-                <div class="terminal">
-                    <div class="terminal-header">
-                        <span class="terminal-dot red"></span>
-                        <span class="terminal-dot yellow"></span>
-                        <span class="terminal-dot green"></span>
-                        <span class="terminal-title">php artisan {{ $selectedCommand }} — output</span>
-                    </div>
-                    <div class="terminal-body">
-                        {!! renderArtisanOutput($output ?? '', $selectedCommand ?? 'migrate', $params ?? '') !!}
-                        <div class="meta">
-                            @isset($duration)
-                                <span>&#9201; {{ $duration }}ms</span>
-                            @endisset
-                            <span class="status-chip {{ ($status ?? 'success') === 'success' ? 'success' : 'error' }}">
-                                {{ ($status ?? 'success') === 'success' ? 'SUCCESS' : 'FAILED' }}
-                            </span>
-                        </div>
-                    </div>
+
+            <div class="terminal">
+
+                <div class="terminal-header">
+
+                    <span class="terminal-dot red"></span>
+                    <span class="terminal-dot yellow"></span>
+                    <span class="terminal-dot green"></span>
+
+                    <span class="terminal-title">
+                        php artisan {{ $selectedCommand }} — output
+                    </span>
+
                 </div>
+
+
+                <div class="terminal-body">
+
+                    {!! renderArtisanOutput(
+                    $output ?? '',
+                    $selectedCommand ?? 'migrate',
+                    $params ?? ''
+                    ) !!}
+
+
+                    <div class="meta">
+
+                        @isset($duration)
+
+                        <span>
+                            &#9201; {{ $duration }}ms
+                        </span>
+
+                        @endisset
+
+
+                        <span
+                            class="status-chip {{ ($status ?? 'success') === 'success' ? 'success' : 'error' }}">
+
+                            {{ ($status ?? 'success') === 'success'
+                                ? 'SUCCESS'
+                                : 'FAILED' }}
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
             @else
-                <div class="terminal">
-                    <div class="terminal-header">
-                        <span class="terminal-dot red"></span>
-                        <span class="terminal-dot yellow"></span>
-                        <span class="terminal-dot green"></span>
-                        <span class="terminal-title">artisan — terminal</span>
-                    </div>
-                    <div class="terminal-body empty">Select a command and click <strong>Execute</strong> to see output here.</div>
+
+            <div class="terminal">
+
+                <div class="terminal-header">
+
+                    <span class="terminal-dot red"></span>
+                    <span class="terminal-dot yellow"></span>
+                    <span class="terminal-dot green"></span>
+
+                    <span class="terminal-title">
+                        artisan — terminal
+                    </span>
+
                 </div>
+
+                <div class="terminal-body empty">
+
+                    Select a command and click
+                    <strong>Execute</strong>
+                    to see output here.
+
+                </div>
+
+            </div>
+
             @endif
 
+
+            {{-- FOOTER --}}
             <div class="footer">
-                <span>Laravel Artisan Command Runner</span>
-                <span>PHP {{ phpversion() }} / Laravel {{ app()->version() }}</span>
+
+                <span>
+                    Laravel Artisan Command Runner
+                </span>
+
+                <span>
+                    PHP {{ phpversion() }}
+                    /
+                    Laravel {{ app()->version() }}
+                </span>
+
             </div>
+
         </main>
+
     </div>
+
 
     <script>
         const helpMap = {
+
             'migrate:fresh': 'Drops all tables and re-runs migrations, use --seed to run seeders.',
+
             'migrate:rollback': 'Rollback last batch. Use --step=N to limit steps.',
+
             'db:seed': 'Seed database. Use --class=SeederClass to target specific seeder.',
+
             'db:wipe': 'Drop all tables/views/types. Add --force to skip confirmation.',
+
             'cache:forget': 'Remove specific item from cache. Enter the cache key name.',
+
             'key:generate': 'Generate APP_KEY. Add --force to overwrite existing key.',
+
             'queue:work': 'Process jobs. e.g., --queue=emails --sleep=3 --tries=3',
+
         };
 
+
         function updateHelpText() {
-            const command = document.getElementById('command').value;
-            const helpEl = document.querySelector('.help-text');
+
+            const command =
+                document.getElementById('command').value;
+
+            const helpEl =
+                document.querySelector('.help-text');
+
             if (helpEl) {
-                helpEl.textContent = helpMap[command] || 'Enter optional parameters separated by spaces.';
+
+                helpEl.textContent =
+                    helpMap[command] ||
+                    'Enter optional parameters separated by spaces.';
+
             }
+
         }
 
-        document.getElementById('command').addEventListener('change', updateHelpText);
+
+        document
+            .getElementById('command')
+            .addEventListener('change', updateHelpText);
+
         updateHelpText();
     </script>
+
 </body>
+
 </html>
